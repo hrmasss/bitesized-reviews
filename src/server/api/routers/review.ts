@@ -33,7 +33,23 @@ export const reviewRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.db.review.findMany();
+  getLatest: publicProcedure.query(({ ctx }) => {
+    return ctx.db.review.findMany({
+      take: 10,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }),
+
+  getTop: publicProcedure.query(({ ctx }) => {
+    return ctx.db.review.findMany({
+      take: 10,
+      orderBy: {
+        upvotes: {
+          _count: "desc",
+        },
+      },
+    });
   }),
 });

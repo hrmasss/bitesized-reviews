@@ -2,6 +2,7 @@ import Navbar from "@/components/navbar";
 import Image from "next/image";
 import Logo from "@/assets/logo.png";
 import { lobster } from "@/styles/fonts";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -13,9 +14,12 @@ export default function Home() {
         </h1>
       </div>
       <Navbar />
-      <main>
-        <p>Hello world</p>
+      <main className="py-4 min-h-screen">
+        <div>
+          <h1 className="text-3xl">Latest Reviews</h1>
+        </div>
       </main>
+      <Footer />
     </>
   );
 }
