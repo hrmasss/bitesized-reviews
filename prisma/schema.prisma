@@ -112,9 +112,9 @@ model Review {
     verdict   String?
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
-    createdBy User       @relation(fields: [authorId], references: [id])
+    author User       @relation(fields: [authorId], references: [id])
     authorId  String
     product   Product    @relation(fields: [productId], references: [id])
     productId Int
-    approved  Boolean
+    approved  Boolean    @default(false)
 }
