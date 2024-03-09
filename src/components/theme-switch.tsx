@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 interface Props {
   className?: string;
@@ -22,7 +23,8 @@ export function ThemeSwitch({ className, variant }: Props) {
     <>
       {variant === "text" ? (
         <span className={cn("cursor-pointer", className)} onClick={changeTheme}>
-          Switch to {resolvedTheme === "dark" ? "light" : "dark"} theme
+          <span className="dark:hidden">Switch to dark theme</span>
+          <span className="hidden dark:block">Switch to light theme</span>
         </span>
       ) : (
         <Button
