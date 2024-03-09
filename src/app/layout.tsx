@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { archivo } from "@/styles/fonts";
-
 import { TRPCReactProvider } from "@/trpc/react";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata = {
   title: "BiteSized Revies",
@@ -17,7 +17,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${archivo.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );

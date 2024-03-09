@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { ThemeSwitch } from "./theme-switch";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
@@ -34,14 +35,13 @@ export default function MobileNav() {
       <div
         className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 text-xl font-medium md:hidden ${open ? "flex" : "hidden"}`}
       >
-        <Link href="#">
-          Login
-        </Link>
+        <Link href="#">Login</Link>
         {navLinks.map((link) => (
           <Link key={link.href} href={link.href}>
             {link.text}
           </Link>
         ))}
+        <ThemeSwitch variant="text" />
       </div>
     </>
   );

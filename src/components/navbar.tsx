@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import Link from "next/link";
 import MobileNav from "./mobile-nav";
+import { ThemeSwitch } from "./theme-switch";
 
 export const navLinks = [
   {
@@ -10,10 +11,6 @@ export const navLinks = [
   {
     text: "About",
     href: "/about",
-  },
-  {
-    text: "Contact us",
-    href: "/contact",
   },
 ];
 
@@ -29,6 +26,10 @@ export default function Navbar() {
               <span className="block h-0.5 max-w-0 bg-primary transition-all duration-150 group-hover:max-w-full" />
             </Link>
           ))}
+          <span className="group ml-10">
+            <ThemeSwitch variant="text" />
+            <span className="block h-0.5 max-w-0 bg-primary transition-all duration-150 group-hover:max-w-full" />
+          </span>
         </nav>
         <div>
           <Button
