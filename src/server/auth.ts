@@ -6,9 +6,12 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
+import { Resend } from "resend";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { error } from "console";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -55,6 +58,26 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      async sendVerificationRequest({ identifier: email, url }) {
+        const resend = new Resend(env.RESEND_API_KEY);
+
+        const response = await resend.emails.send({
+          from: "onboarding@resend.dev",
+          to: email,
+          subject: "Sign in to your BiteSized Reviews account",
+          html:
+            '<p>Click the magic link below to sign in to your account:</p>\
+             <p><a href="' +
+            url +
+            '"><b>Sign in</b></a></p>',
+        });
+
+        console.log(response);
+
+        if (response.error) throw new Error(response.error.message);
+      },
     }),
     /**
      * ...add more providers here.

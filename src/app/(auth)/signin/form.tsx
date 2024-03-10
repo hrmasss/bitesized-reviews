@@ -25,6 +25,7 @@ type emailSchema = z.TypeOf<typeof emailSchema>;
 
 export default function SignInForm() {
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const form = useForm<emailSchema>({
@@ -34,17 +35,20 @@ export default function SignInForm() {
     },
   });
 
-  async function onSubmit(userCredentials: emailSchema) {
+  async function onSubmit(data: emailSchema) {
     setError("");
     setLoading(true);
 
-    const response = await signIn("credentials", {
-      ...userCredentials,
-      callbackUrl: "/app",
+    const response = await signIn("email", {
+      ...data,
+      callbackUrl: "/",
       redirect: false,
     });
     setLoading(false);
 
+    if (response?.ok) setMessage("Email sent. Check your account.")
+    else if (response?.error) setError(response.error);
+    else setError("Something went wrong! check your network and try again.");
   }
 
   return (
@@ -53,6 +57,12 @@ export default function SignInForm() {
         {error && (
           <p className="text-center text-[0.8rem] font-medium text-destructive">
             {error}
+          </p>
+        )}
+        
+        {message && (
+          <p className="text-center text-[0.8rem] font-medium text-green-600">
+            {message}
           </p>
         )}
 
@@ -83,7 +93,7 @@ export default function SignInForm() {
           {loading ? (
             <span className="flex">
               <Spinner className="text-primary-foreground" />
-             Sending sign in link, please wait...
+              Sending sign in link, please wait...
             </span>
           ) : (
             "Get sign in link"

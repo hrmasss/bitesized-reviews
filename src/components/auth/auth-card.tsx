@@ -7,19 +7,13 @@ import {
   type LiteralUnion,
 } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 import GoogleLogo from "@/components/auth/logos/google";
 
 const renderProviderLogo = (providerName: string) => {
   switch (providerName.toLowerCase()) {
     case "google":
-      return <GoogleLogo className="h-5 w-5"/>;
+      return <GoogleLogo className="h-5 w-5" />;
     default:
       return null;
   }
@@ -34,17 +28,11 @@ interface AuthCardProps {
   form: React.ReactNode;
 }
 
-export default function AuthCard({
-  title,
-  providers,
-  form,
-}: AuthCardProps) {
+export default function AuthCard({ title, providers, form }: AuthCardProps) {
   return (
-    <Card className="border-none w-full md:w-2/3 bg-background">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="w-full md:w-2/3">
+      <h3 className="text-2xl font-bold">{title}</h3>
+      <div className="pt-6">
         {providers && (
           <div className="grid gap-4">
             {Object.values(providers)
@@ -56,7 +44,7 @@ export default function AuthCard({
                   }
                   key={oAuthProvider.id}
                   variant="outline"
-                  className="w-full border-2 border-foreground hover:bg-primary hover:text-background text-lg rounded-none"
+                  className="w-full rounded-none border-2 border-foreground text-lg hover:bg-primary hover:text-background"
                 >
                   {renderProviderLogo(oAuthProvider.name)}
                   {oAuthProvider.name}
@@ -66,7 +54,7 @@ export default function AuthCard({
         )}
 
         {providers && (
-          <div className="mt-8 mb-6 flex items-center justify-center gap-2">
+          <div className="mb-6 mt-8 flex items-center justify-center gap-2">
             <div className="h-[1px] grow bg-border" />
             or
             <div className="h-[1px] grow bg-border" />
@@ -74,7 +62,7 @@ export default function AuthCard({
         )}
 
         {form}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
