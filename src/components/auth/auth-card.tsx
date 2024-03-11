@@ -40,7 +40,7 @@ export default function AuthCard({ title, providers, form }: AuthCardProps) {
               .map((oAuthProvider) => (
                 <Button
                   onClick={() =>
-                    signIn(oAuthProvider.id, { callbackUrl: "/app" })
+                    signIn(oAuthProvider.id, { callbackUrl: "/" })
                   }
                   key={oAuthProvider.id}
                   variant="outline"
