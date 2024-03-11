@@ -5,7 +5,6 @@ import Logo from "@/assets/logo.png";
 import { lobster } from "@/styles/fonts";
 import Footer from "@/components/Footer";
 import { db } from "@/server/db";
-import ReviewCard from "@/components/review-card";
 
 export default async function Home() {
   const session = await getServerAuthSession();
