@@ -2,6 +2,11 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import MobileNav from "./mobile-nav";
 import { ThemeSwitch } from "./theme-switch";
+import type { Session } from "next-auth";
+
+interface Props {
+  session: Session | null;
+}
 
 export const navLinks = [
   {
@@ -14,7 +19,7 @@ export const navLinks = [
   },
 ];
 
-export default function Navbar() {
+export default function Navbar({ session }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-background/90 backdrop-blur transition-colors duration-500">
       {/* Desktop Nav */}
@@ -37,9 +42,15 @@ export default function Navbar() {
             variant="outline"
             className="h-16 rounded-none border-2 border-foreground px-8 hover:bg-primary hover:text-background"
           >
-            <Link href="#" className="text-xl">
-              Login
-            </Link>
+            {session?.user ? (
+              <Link href="/signout" className="text-xl">
+                Sign out
+              </Link>
+            ) : (
+              <Link href="/signin" className="text-xl">
+                Sign in
+              </Link>
+            )}
           </Button>
           <Button
             asChild

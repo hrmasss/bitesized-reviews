@@ -6,12 +6,11 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
-import EmailProvider from "next-auth/providers/email";
 import { Resend } from "resend";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
-import { error } from "console";
+// import { error } from "console";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -40,6 +39,10 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  pages: {
+    signIn: "/signin",
+    signOut: "/signout",
+  },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
@@ -50,16 +53,19 @@ export const authOptions: NextAuthOptions = {
     }),
   },
   adapter: PrismaAdapter(db) as Adapter,
-  pages: {
-    signIn: "/signin",
-    signOut: "/signout",
-  },
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
-    EmailProvider({
+    {
+      id: "email",
+      type: "email",
+      from: "onboarding@resend.dev",
+      server: {},
+      maxAge: 24 * 60 * 60,
+      name: "Email",
+      options: {},
       async sendVerificationRequest({ identifier: email, url }) {
         const resend = new Resend(env.RESEND_API_KEY);
 
@@ -74,11 +80,9 @@ export const authOptions: NextAuthOptions = {
             '"><b>Sign in</b></a></p>',
         });
 
-        console.log(response);
-
         if (response.error) throw new Error(response.error.message);
       },
-    }),
+    },
     /**
      * ...add more providers here.
      *

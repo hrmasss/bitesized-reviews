@@ -1,3 +1,4 @@
+import { getServerAuthSession } from "@/server/auth";
 import Navbar from "@/components/navbar";
 import Image from "next/image";
 import Logo from "@/assets/logo.png";
@@ -7,6 +8,8 @@ import { db } from "@/server/db";
 import ReviewCard from "@/components/review-card";
 
 export default async function Home() {
+  const session = await getServerAuthSession();
+
   const latestReviews = await db.review.findMany({
     include: {
       product: true,
@@ -21,14 +24,17 @@ export default async function Home() {
           BiteSized Reviews
         </h1>
       </div>
-      <Navbar />
+      <Navbar session={session} />
       <main className="min-h-screen py-5">
         {latestReviews && (
           <div className="m-5 p-5">
             <h1 className="text-3xl">Latest Reviews</h1>
             <div className="md: grid gap-4 py-4 md:grid-cols-2">
               {latestReviews.map((review) => (
-                <div key={review.id} className="border-2 border-foreground p-4 rounded-lg">
+                <div
+                  key={review.id}
+                  className="rounded-lg border-2 border-foreground p-4"
+                >
                   <h3 className="text-xl font-semibold">
                     {review.product.name}
                   </h3>
