@@ -56,7 +56,7 @@ export default function Navbar({ session }: Props) {
             asChild
             className="h-16 rounded-none border-2 border-l-0 border-foreground bg-foreground px-8 text-background hover:bg-primary"
           >
-            <Link href="#" className="text-xl">
+            <Link href="/review/new" className="text-xl">
               Post Review
             </Link>
           </Button>
@@ -64,7 +64,7 @@ export default function Navbar({ session }: Props) {
       </div>
 
       {/* Mobile Nav */}
-      <MobileNav />
+      <MobileNav auth={!!session} />
     </header>
   );
 }

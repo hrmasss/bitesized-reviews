@@ -80,13 +80,13 @@ model Downvote {
 
 model Category {
     id       Int       @id @default(autoincrement())
-    name     String
+    name     String    @unique
     products Product[]
 }
 
 model Brand {
     id       Int       @id @default(autoincrement())
-    name     String
+    name     String    @unique
     products Product[]
 }
 
@@ -112,7 +112,7 @@ model Review {
     verdict   String?
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
-    author User       @relation(fields: [authorId], references: [id])
+    author    User       @relation(fields: [authorId], references: [id])
     authorId  String
     product   Product    @relation(fields: [productId], references: [id])
     productId Int

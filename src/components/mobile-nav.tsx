@@ -10,7 +10,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ThemeSwitch } from "./theme-switch";
 
-export default function MobileNav() {
+export default function MobileNav({ auth }: { auth: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -35,7 +35,15 @@ export default function MobileNav() {
       <div
         className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 text-xl font-medium md:hidden ${open ? "flex" : "hidden"}`}
       >
-        <Link href="#">Login</Link>
+        {auth ? (
+          <Link href="/signout" className="text-xl">
+            Sign out
+          </Link>
+        ) : (
+          <Link href="/signin" className="text-xl">
+            Sign in
+          </Link>
+        )}
         {navLinks.map((link) => (
           <Link key={link.href} href={link.href}>
             {link.text}
