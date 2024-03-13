@@ -10,12 +10,12 @@ interface Props {
 
 export const navLinks = [
   {
-    text: "Discover",
-    href: "/discover",
+    text: "Home",
+    href: "/",
   },
   {
-    text: "About",
-    href: "/about",
+    text: "Discover",
+    href: "/discover",
   },
 ];
 
@@ -52,14 +52,16 @@ export default function Navbar({ session }: Props) {
               </Link>
             )}
           </Button>
-          <Button
-            asChild
-            className="h-16 rounded-none border-2 border-l-0 border-foreground bg-foreground px-8 text-background hover:bg-primary"
-          >
-            <Link href="/review/new" className="text-xl">
-              Post Review
-            </Link>
-          </Button>
+          {session?.user && (
+            <Button
+              asChild
+              className="h-16 rounded-none border-2 border-l-0 border-foreground bg-foreground px-8 text-background hover:bg-primary"
+            >
+              <Link href="/review/new" className="text-xl">
+                Post Review
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import Image from "next/image";
 import AuthCard from "@/components/auth/auth-card";
 import { lobster } from "@/styles/fonts";
 import SignInForm from "./form";
+import Link from "next/link";
 
 export default async function SigninPage() {
   const session = await getServerAuthSession();
@@ -16,9 +17,9 @@ export default async function SigninPage() {
   return (
     <section className="grid min-h-screen p-4 lg:grid-cols-2">
       <div className="hidden w-full flex-col items-center justify-center border-r-2 border-foreground lg:flex">
-        <div className="aspect-square">
+        <Link href="/" className="aspect-square">
           <Image priority src={Logo} alt="" />
-        </div>
+        </Link>
         <h1
           className={`text-center font-display text-7xl font-bold ${lobster.className}`}
         >
@@ -26,11 +27,7 @@ export default async function SigninPage() {
         </h1>
       </div>
       <main className="flex items-center justify-center">
-        <AuthCard
-          title="Sign in to your account"
-          providers={providers}
-          form={<SignInForm />}
-        />
+        <AuthCard providers={providers} form={<SignInForm />} />
       </main>
     </section>
   );

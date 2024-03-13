@@ -7,8 +7,11 @@ import {
   type LiteralUnion,
 } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-
 import GoogleLogo from "@/components/auth/logos/google";
+import Image from "next/image";
+import Logo from "@/assets/logo.png";
+import { lobster } from "@/styles/fonts";
+import Link from "next/link";
 
 const renderProviderLogo = (providerName: string) => {
   switch (providerName.toLowerCase()) {
@@ -20,7 +23,6 @@ const renderProviderLogo = (providerName: string) => {
 };
 
 interface AuthCardProps {
-  title: string;
   providers: Record<
     LiteralUnion<BuiltInProviderType, string>,
     ClientSafeProvider
@@ -28,40 +30,48 @@ interface AuthCardProps {
   form: React.ReactNode;
 }
 
-export default function AuthCard({ title, providers, form }: AuthCardProps) {
+export default function AuthCard({ providers, form }: AuthCardProps) {
   return (
     <div className="w-full md:w-2/3">
-      <h3 className="text-2xl font-bold">{title}</h3>
-      <div className="pt-6">
-        {providers && (
-          <div className="grid gap-4">
-            {Object.values(providers)
-              .filter((provider) => provider.type === "oauth")
-              .map((oAuthProvider) => (
-                <Button
-                  onClick={() =>
-                    signIn(oAuthProvider.id, { callbackUrl: "/" })
-                  }
-                  key={oAuthProvider.id}
-                  variant="outline"
-                  className="w-full rounded-none border-2 border-foreground text-lg hover:bg-primary hover:text-background"
-                >
-                  {renderProviderLogo(oAuthProvider.name)}
-                  {oAuthProvider.name}
-                </Button>
-              ))}
-          </div>
-        )}
-
-        {providers && (
-          <div className="mb-6 mt-8 flex items-center justify-center gap-2">
-            <div className="h-[1px] grow bg-border" />
-            or
-            <div className="h-[1px] grow bg-border" />
-          </div>
-        )}
-
-        {form}
+      <div className="mb-6  md:hidden">
+        <Link href="/" className="flex flex-col items-center justify-center py-2">
+          <Image src={Logo} alt="" className="size-20" />
+          <h1
+            className={`font-display text-3xl font-bold md:text-7xl ${lobster.className}`}
+          >
+            BiteSized Reviews
+          </h1>
+        </Link>
+      </div>
+      <div className="px-2 md:px-0">
+        <h3 className="text-xl font-bold md:text-2xl">Sign in to your account</h3>
+        <div className="pt-6">
+          {providers && (
+            <div className="grid gap-4">
+              {Object.values(providers)
+                .filter((provider) => provider.type === "oauth")
+                .map((oAuthProvider) => (
+                  <Button
+                    onClick={() => signIn(oAuthProvider.id, { callbackUrl: "/" })}
+                    key={oAuthProvider.id}
+                    variant="outline"
+                    className="w-full rounded-none border-2 border-foreground md:text-lg hover:bg-primary hover:text-background font-semibold"
+                  >
+                    {renderProviderLogo(oAuthProvider.name)}
+                    {oAuthProvider.name}
+                  </Button>
+                ))}
+            </div>
+          )}
+          {providers && (
+            <div className="mb-6 mt-8 flex items-center justify-center gap-2">
+              <div className="h-[1px] grow bg-border" />
+              or
+              <div className="h-[1px] grow bg-border" />
+            </div>
+          )}
+          {form}
+        </div>
       </div>
     </div>
   );

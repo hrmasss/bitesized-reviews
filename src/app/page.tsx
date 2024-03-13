@@ -5,6 +5,7 @@ import Logo from "@/assets/logo.png";
 import { lobster } from "@/styles/fonts";
 import Footer from "@/components/Footer";
 import { db } from "@/server/db";
+import Link from "next/link";
 
 export default async function Home() {
   const session = await getServerAuthSession();
@@ -17,11 +18,15 @@ export default async function Home() {
 
   return (
     <>
-      <div className="hidden items-center justify-center md:flex">
-        <Image src={Logo} alt="" className="size-32" />
-        <h1 className={`font-display text-7xl font-bold ${lobster.className}`}>
-          BiteSized Reviews
-        </h1>
+      <div>
+        <Link href="/" className="flex items-center justify-center py-2">
+          <Image src={Logo} alt="" className="size-12 md:size-32" />
+          <h1
+            className={`font-display text-3xl font-bold md:text-7xl ${lobster.className}`}
+          >
+            BiteSized Reviews
+          </h1>
+        </Link>
       </div>
       <Navbar session={session} />
       <main className="min-h-screen py-5">

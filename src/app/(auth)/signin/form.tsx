@@ -46,7 +46,7 @@ export default function SignInForm() {
     });
     setLoading(false);
 
-    if (response?.ok) setMessage("Email sent. Check your account.")
+    if (response?.ok) setMessage("Email sent. Check your account.");
     else if (response?.error) setError(response.error);
     else setError("Something went wrong! check your network and try again.");
   }
@@ -59,7 +59,7 @@ export default function SignInForm() {
             {error}
           </p>
         )}
-        
+
         {message && (
           <p className="text-center text-[0.8rem] font-medium text-green-600">
             {message}
@@ -74,8 +74,10 @@ export default function SignInForm() {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
+                  disabled // TODO: Enable email sign in
                   type="email"
-                  placeholder="someone@example.com"
+                  placeholder="Coming soon..."
+                  // placeholder="someone@example.com"
                   {...field}
                   className="rounded-none border-2 border-foreground"
                 />
@@ -86,7 +88,8 @@ export default function SignInForm() {
         />
 
         <Button
-          disabled={loading}
+          disabled // TODO: Enable email sign in
+          // disabled={loading}
           type="submit"
           className="w-full rounded-none border-2 border-foreground bg-black hover:bg-primary"
         >

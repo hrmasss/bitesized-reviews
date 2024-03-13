@@ -1,11 +1,8 @@
 "use client";
 
 import { navLinks } from "./navbar";
-import { lobster } from "@/styles/fonts";
-import Logo from "@/assets/logo.png";
-import Image from "next/image";
 import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
+import { BarChart2, X, Plus } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { ThemeSwitch } from "./theme-switch";
@@ -14,34 +11,45 @@ export default function MobileNav({ auth }: { auth: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="flex h-16 items-center justify-between gap-4 border-y-2 border-foreground px-4 md:hidden">
-        <span className="flex items-center justify-center gap-2">
-          <Image src={Logo} alt="" className="size-12" />
-          <h1
-            className={`font-display text-3xl font-bold ${lobster.className}`}
-          >
-            BS Reviews
-          </h1>
-        </span>
+      <div className="flex h-12 items-center justify-between gap-4 border-y-2 border-foreground md:hidden">
         <Button
           size="icon"
           variant="ghost"
           className="h-16 rounded-none text-foreground hover:bg-transparent"
           onClick={() => setOpen((p) => !p)}
         >
-          {open ? <X size="3rem" /> : <Menu size="3rem" />}
+          {open ? (
+            <X className="size-8" />
+          ) : (
+            <BarChart2 className="size-8 rotate-90" />
+          )}
         </Button>
+
+        {auth ? (
+          <Button
+            asChild
+            className="size-12 rounded-none border-2 border-foreground bg-foreground p-0 text-background hover:bg-primary"
+          >
+            <Link href="/review/new">
+              <Plus className="size-6" />
+            </Link>
+          </Button>
+        ) : (
+          <Button
+            asChild
+            variant="outline"
+            className="h-12 rounded-none border-2 border-foreground hover:bg-primary hover:text-background"
+          >
+            <Link href="/signin">Sign in</Link>
+          </Button>
+        )}
       </div>
       <div
-        className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 text-xl font-medium md:hidden ${open ? "flex" : "hidden"}`}
+        className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 font-medium md:hidden ${open ? "flex" : "hidden"}`}
       >
-        {auth ? (
-          <Link href="/signout" className="text-xl">
+        {auth && (
+          <Link href="/signout">
             Sign out
-          </Link>
-        ) : (
-          <Link href="/signin" className="text-xl">
-            Sign in
           </Link>
         )}
         {navLinks.map((link) => (
