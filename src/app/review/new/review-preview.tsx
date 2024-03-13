@@ -34,75 +34,76 @@ export default function ReviewPreview({
     { enabled: !!productId },
   );
 
+  const renderProductHeader = () => (
+    <CardHeader>
+      <CardTitle>
+        {product?.name ?? (
+          <span className="text-muted-foreground">Select a product</span>
+        )}
+      </CardTitle>
+      {product && (
+        <div>
+          <p>{product.brand.name}</p>
+        </div>
+      )}
+    </CardHeader>
+  );
+
+  const renderPositives = () => (
+    <div>
+      <ul>
+        {positives.map((positive, index) => (
+          <li key={index} className="flex items-center gap-4">
+            <span className="flex items-center gap-2">
+              <CirclePlus strokeWidth={3} className="text-success size-4" />
+              {positive}
+            </span>
+            <Button
+              className="aspect-square h-full p-1 hover:bg-destructive/40 hover:text-destructive-foreground"
+              variant="ghost"
+              onClick={() => removePositive(index)}
+            >
+              <Trash2 className="size-3" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  const renderNegatives = () => (
+    <div>
+      <ul>
+        {negatives.map((negative, index) => (
+          <li key={index} className="flex items-center gap-4">
+            <span className="flex items-center gap-2">
+              <CircleMinus
+                strokeWidth={3}
+                className="size-4 text-destructive"
+              />
+              {negative}
+            </span>
+            <Button
+              className="aspect-square h-full p-1 hover:bg-destructive/40 hover:text-destructive-foreground"
+              variant="ghost"
+              onClick={() => removeNegative(index)}
+            >
+              <Trash2 className="size-3" />
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
   return (
     <Card className="overflow-hidden">
-      <CardHeader>
-        <CardTitle>
-          {product?.name ?? (
-            <span className="text-muted-foreground">Select a product</span>
-          )}
-        </CardTitle>
-        {product && (
-          <div>
-            <p>{product.brand.name}</p>
-          </div>
-        )}
-      </CardHeader>
+      {renderProductHeader()}
       {(positives.length > 0 || negatives.length > 0) && (
         <CardContent>
           <div className="grid md:grid-cols-2 md:gap-4">
-            {positives.length > 0 && (
-              <div>
-                <ul>
-                  {positives.map((positive, index) => (
-                    <li key={index} className="flex items-center gap-4">
-                      <span className="flex items-center gap-2">
-                        <CirclePlus
-                          strokeWidth={3}
-                          className="text-success size-4"
-                        />
-                        {positive}
-                      </span>
-                      <Button
-                        className="aspect-square h-full p-1 hover:bg-destructive/40 hover:text-destructive-foreground"
-                        variant="ghost"
-                        onClick={() => {
-                          removePositive(index);
-                        }}
-                      >
-                        <Trash2 className="size-3" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {negatives.length > 0 && (
-              <div>
-                <ul>
-                  {negatives.map((negative, index) => (
-                    <li key={index} className="flex items-center gap-4">
-                      <span className="flex items-center gap-2">
-                        <CircleMinus
-                          strokeWidth={3}
-                          className="size-4 text-destructive"
-                        />
-                        {negative}
-                      </span>
-                      <Button
-                        className="aspect-square h-full p-1 hover:bg-destructive/40 hover:text-destructive-foreground"
-                        variant="ghost"
-                        onClick={() => {
-                          removeNegative(index);
-                        }}
-                      >
-                        <Trash2 className="size-3" />
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {positives.length > 0 && renderPositives()}
+            {negatives.length > 0 && renderNegatives()}
           </div>
         </CardContent>
       )}
