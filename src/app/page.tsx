@@ -1,18 +1,24 @@
+import { db } from "@/server/db";
 import { getServerAuthSession } from "@/server/auth";
+
+import { lobster } from "@/styles/fonts";
+import Logo from "@/assets/logo.png";
 import Navbar from "@/components/navbar";
 import Image from "next/image";
-import Logo from "@/assets/logo.png";
-import { lobster } from "@/styles/fonts";
 import Footer from "@/components/Footer";
-import { db } from "@/server/db";
 import Link from "next/link";
+import ReviewCard from "@/components/review-card";
 
 export default async function Home() {
   const session = await getServerAuthSession();
 
   const latestReviews = await db.review.findMany({
     include: {
-      product: true,
+      product: {
+        include: {
+          brand: true,
+        },
+      },
     },
   });
 
@@ -31,38 +37,16 @@ export default async function Home() {
       <Navbar session={session} />
       <main className="min-h-screen py-5">
         {latestReviews && (
-          <div className="m-5 p-5">
-            <h1 className="text-3xl">Latest Reviews</h1>
-            <div className="md: grid gap-4 py-4 md:grid-cols-2">
+          <div className="md:p-10 p-2">
+            <h1 className="text-2xl font-semibold">Latest Reviews</h1>
+            <div className="md: grid gap-4 py-4 md:grid-cols-2 lg:grid-cols-3">
               {latestReviews.map((review) => (
-                <div
+                <ReviewCard
                   key={review.id}
-                  className="rounded-lg border-2 border-foreground p-4"
-                >
-                  <h3 className="text-xl font-semibold">
-                    {review.product.name}
-                  </h3>
-                  <div className="mt-2 grid gap-2 border-t border-foreground pt-2 md:grid-cols-2">
-                    <div className="text-green-600">
-                      <p className="text-lg font-semibold">Positives</p>
-                      {review.positives.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </div>
-                    <div className="text-red-600">
-                      <p className="text-lg font-semibold">Negatives</p>
-                      {review.negatives.map((point) => (
-                        <li key={point}>{point}</li>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex pt-2">
-                    <p className="text-lg">
-                      <span className="mr-2 font-semibold">Verdict:</span>
-                      {review.verdict}
-                    </p>
-                  </div>
-                </div>
+                  review={review}
+                  product={review.product}
+                  brand={review.product.brand}
+                />
               ))}
             </div>
           </div>

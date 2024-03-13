@@ -101,7 +101,7 @@ export default function ReviewPreview({
       {renderProductHeader()}
       {(positives.length > 0 || negatives.length > 0) && (
         <CardContent>
-          <div className="grid md:grid-cols-2 md:gap-4">
+          <div className="grid gap-2 md:grid-cols-2 md:gap-4">
             {positives.length > 0 && renderPositives()}
             {negatives.length > 0 && renderNegatives()}
           </div>
