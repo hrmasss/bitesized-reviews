@@ -15,3 +15,9 @@ export const searchProductSchema = z.object({
 });
 
 export type searchProductSchema = z.TypeOf<typeof searchProductSchema>;
+
+export const getProductSchema = z.object({
+  id: z.number().int(),
+});
+
+export type getProductSchema = z.TypeOf<typeof getProductSchema>;

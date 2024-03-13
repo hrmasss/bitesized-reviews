@@ -4,7 +4,11 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { TRPCError } from "@trpc/server";
-import { createProductSchema, searchProductSchema } from "@/schemas/product";
+import {
+  createProductSchema,
+  getProductSchema,
+  searchProductSchema,
+} from "@/schemas/product";
 
 export const productRouter = createTRPCRouter({
   create: protectedProcedure
@@ -46,12 +50,32 @@ export const productRouter = createTRPCRouter({
       return product;
     }),
 
+  get: publicProcedure.input(getProductSchema).query(async ({ ctx, input }) => {
+    const product = await ctx.db.product.findUnique({
+      where: {
+        id: input.id,
+      },
+      include: {
+        brand: true,
+        categories: true,
+      },
+    });
+
+    return product;
+  }),
+
   search: publicProcedure
     .input(searchProductSchema)
     .query(async ({ ctx, input }) => {
       const { name } = input;
 
       const products = await ctx.db.product.findMany({
+        take: 10,
+        orderBy: {
+          reviews: {
+            _count: "desc",
+          },
+        },
         where: name
           ? {
               name: {
