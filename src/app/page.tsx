@@ -5,7 +5,7 @@ import { lobster } from "@/styles/fonts";
 import Logo from "@/assets/logo.png";
 import Navbar from "@/components/navbar";
 import Image from "next/image";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import Link from "next/link";
 import ReviewCard from "@/components/review-card";
 

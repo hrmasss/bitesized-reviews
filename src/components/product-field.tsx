@@ -1,18 +1,17 @@
-import React from "react";
+import { api } from "@/trpc/react";
 import type { UseFormReturn } from "react-hook-form";
 import type { createReviewSchema } from "@/schemas/review";
-import type { Product } from "@prisma/client";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState, useEffect } from "react";
 
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -29,25 +28,77 @@ import Spinner from "@/components/ui/spinner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface RenderProductFieldProps {
-  isDesktop: boolean;
-  drawerOpen: boolean;
-  setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface ProductFieldProps {
   form: UseFormReturn<createReviewSchema>;
-  products?: Product[];
-  isLoading: boolean;
-  setSearchInput: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const renderProductField = ({
-  isDesktop,
-  drawerOpen,
-  setDrawerOpen,
-  form,
-  products,
-  isLoading,
-  setSearchInput,
-}: RenderProductFieldProps) => {
+export default function ProductField({ form }: ProductFieldProps) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  const {
+    data: products,
+    status,
+  } = api.product.search.useQuery({
+    name: searchQuery,
+  });
+
+  // Debounce search query
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(searchInput);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
+
+  const renderProductOptions = () => {
+    if (status === "loading") {
+      return (
+        <p className="flex items-center p-4">
+          <Spinner />
+          Loading...
+        </p>
+      );
+    }
+
+    if (status === "error") {
+      return <p className="p-4 text-destructive">Something went wrong!</p>;
+    }
+
+    if (products?.length === 0) {
+      return <p className="p-4 text-destructive">No products found!</p>;
+    }
+
+    return (
+      <CommandGroup>
+        {products?.map((product) => (
+          <CommandItem
+            className="mb-1 cursor-pointer"
+            value={product.name}
+            key={product.id}
+            onSelect={() => {
+              form.setValue("productId", product.id);
+            }}
+          >
+            <Check
+              className={cn(
+                "mr-2 h-4 w-4",
+                product.id === form.getValues("productId")
+                  ? "opacity-100"
+                  : "opacity-0",
+              )}
+            />
+            {product.name}
+          </CommandItem>
+        ))}
+      </CommandGroup>
+    );
+  };
+
   if (isDesktop) {
     return (
       <FormField
@@ -81,42 +132,10 @@ const renderProductField = ({
                     placeholder="Search products..."
                     onValueChange={(value) => setSearchInput(value)}
                   />
-                  <CommandEmpty>No products found.</CommandEmpty>
-                  {isLoading ? (
-                    <p className="flex items-center p-4">
-                      <Spinner />
-                      Loading...
-                    </p>
-                  ) : (
-                    <CommandGroup>
-                      {products?.map((product) => (
-                        <CommandItem
-                          className="mb-1 cursor-pointer"
-                          value={product.name}
-                          key={product.id}
-                          onSelect={() => {
-                            form.setValue("productId", product.id);
-                          }}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              product.id === field.value
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                          {product.name}
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  )}
+                  {renderProductOptions()}
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormDescription>
-              This is the product that will be reviewed.
-            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
@@ -156,49 +175,15 @@ const renderProductField = ({
                       placeholder="Search products..."
                       onValueChange={(value) => setSearchInput(value)}
                     />
-                    <CommandEmpty>No products found.</CommandEmpty>
-                    {isLoading ? (
-                      <p className="flex items-center p-4">
-                        <Spinner />
-                        Loading...
-                      </p>
-                    ) : (
-                      <CommandGroup>
-                        {products?.map((product) => (
-                          <CommandItem
-                            className="mb-1 cursor-pointer"
-                            value={product.name}
-                            key={product.id}
-                            onSelect={() => {
-                              form.setValue("productId", product.id);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                product.id === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                            {product.name}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    )}
+                    {renderProductOptions()}
                   </Command>
                 </div>
               </DrawerContent>
             </Drawer>
-            <FormDescription>
-              This is the product that will be reviewed.
-            </FormDescription>
             <FormMessage />
           </FormItem>
         )}
       />
     );
   }
-};
-
-export { renderProductField };
+}

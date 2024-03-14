@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
 import { createReviewSchema } from "@/schemas/review";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { toast } from "@/components/ui/use-toast";
-import { renderProductField } from "./product-field";
+import ProductField from "@/components/product-field";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -21,35 +20,17 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import ReviewPreview from "./review-preview";
-import MultiInputs from "@/components/MultiInputs";
+import MultiInputs from "@/components/multi-inputs";
 
 export default function ReviewForm() {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
   const [positives, setPositives] = useState<string[]>([]);
   const [negatives, setNegatives] = useState<string[]>([]);
-
-  const { data: products, isLoading } = api.product.search.useQuery({
-    name: searchQuery,
-  });
 
   const form = useForm<createReviewSchema>({
     resolver: zodResolver(createReviewSchema),
   });
 
   const preview = { ...form.watch(), positives, negatives };
-
-  // Debounce search query
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setSearchQuery(searchInput);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchInput]);
 
   const handleAddPositive = (value: string) => {
     setPositives([...positives, value]);
@@ -104,15 +85,7 @@ export default function ReviewForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 rounded-lg border bg-background p-6 shadow-sm"
           >
-            {renderProductField({
-              isDesktop,
-              drawerOpen,
-              setDrawerOpen,
-              form,
-              products,
-              isLoading,
-              setSearchInput,
-            })}
+            <ProductField form={form} />
 
             <MultiInputs label="Positives" addValue={handleAddPositive} />
 
@@ -123,7 +96,7 @@ export default function ReviewForm() {
               name="verdict"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Verdict</FormLabel>
                   <FormControl>
                     <Textarea
                       maxLength={265}

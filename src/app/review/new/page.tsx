@@ -1,6 +1,6 @@
 import { getServerAuthSession } from "@/server/auth";
 import Navbar from "@/components/navbar";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import ReviewForm from "./review-form";
 
 export default async function Home() {
@@ -9,7 +9,7 @@ export default async function Home() {
   return (
     <>
       <Navbar session={session} />
-      <main className="min-h-screen p-4 py-5 md:px-10">
+      <main className="p-4 md:p-10">
         <ReviewForm />
       </main>
       <Footer />
