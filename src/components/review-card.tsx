@@ -71,7 +71,7 @@ export default function ReviewCard({ product, brand, review }: Props) {
       )}
       {review.verdict && (
         <CardFooter>
-          <CardDescription className="text-balance text-base leading-tight text-foreground">
+          <CardDescription className="text-base leading-tight text-foreground">
             {review.verdict}
           </CardDescription>
         </CardFooter>
