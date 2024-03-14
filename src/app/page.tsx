@@ -13,6 +13,9 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   const latestReviews = await db.review.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       product: {
         include: {
@@ -37,7 +40,7 @@ export default async function Home() {
       <Navbar session={session} />
       <main className="min-h-screen py-5">
         {latestReviews && (
-          <div className="md:p-10 p-2">
+          <div className="p-2 md:p-10">
             <h1 className="text-2xl font-semibold">Latest Reviews</h1>
             <div className="md: grid gap-4 py-4 md:grid-cols-2 lg:grid-cols-3">
               {latestReviews.map((review) => (

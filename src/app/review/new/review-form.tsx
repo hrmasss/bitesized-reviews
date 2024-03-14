@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
 import { createReviewSchema } from "@/schemas/review";
-import { toast } from "@/components/ui/use-toast";
-import ProductField from "@/components/product-field";
+import { useRouter } from "next/navigation";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -21,10 +20,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import ReviewPreview from "./review-preview";
 import MultiInputs from "@/components/multi-inputs";
+import ProductField from "@/components/product-field";
+import Spinner from "@/components/ui/spinner";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ReviewForm() {
   const [positives, setPositives] = useState<string[]>([]);
   const [negatives, setNegatives] = useState<string[]>([]);
+
+  const { mutate, status } = api.review.create.useMutation();
+
+  const router = useRouter();
 
   const form = useForm<createReviewSchema>({
     resolver: zodResolver(createReviewSchema),
@@ -55,17 +61,25 @@ export default function ReviewForm() {
       negatives,
     };
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(formData, null, 2)}
-          </code>
-        </pre>
-      ),
-    });
+    mutate(formData);
   };
+
+  useEffect(() => {
+    if (status === "error") {
+      toast({
+        title: "Something went wrong!",
+        variant: "destructive",
+      });
+    } else if (status === "success") {
+      toast({
+        title: "Review submitted successfully!",
+        description: "Refresh to see changes...",
+        variant: "success",
+      });
+
+      router.push("/");
+    }
+  }, [status, router]);
 
   return (
     <main className="grid gap-4 lg:grid-cols-2">
@@ -108,7 +122,15 @@ export default function ReviewForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button disabled={status === "loading"} type="submit">
+              {status === "loading" ? (
+                <span className="flex items-center">
+                  <Spinner /> Publishing...{" "}
+                </span>
+              ) : (
+                "Publish"
+              )}
+            </Button>
           </form>
         </Form>
       </section>
