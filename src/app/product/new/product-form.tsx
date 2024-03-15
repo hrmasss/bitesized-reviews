@@ -21,6 +21,7 @@ import Spinner from "@/components/ui/spinner";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import BrandField from "@/components/brand-field";
+import { UploadButton } from "@/components/uploadthing";
 
 export default function ProductForm() {
   const { mutate, status } = api.product.create.useMutation();
@@ -74,6 +75,22 @@ export default function ProductForm() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-6 rounded-lg border bg-background p-6 shadow-sm"
           >
+            <UploadButton
+              appearance={{
+                button: "bg-primary hover:bg-primary/90",
+              }}
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                // Do something with the response
+                console.log("Files: ", res);
+                alert("Upload Completed");
+              }}
+              onUploadError={(error: Error) => {
+                // Do something with the error.
+                alert(`ERROR! ${error.message}`);
+              }}
+            />
+
             <FormField
               control={form.control}
               name="name"

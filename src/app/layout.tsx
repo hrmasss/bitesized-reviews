@@ -1,8 +1,12 @@
+import "@uploadthing/react/styles.css";
 import "@/styles/globals.css";
 import { archivo } from "@/styles/fonts";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { fileRouter } from "@/app/api/uploadthing/core";
 
 export const metadata = {
   title: "BiteSized Revies",
@@ -25,6 +29,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <NextSSRPlugin routerConfig={extractRouterConfig(fileRouter)} />
             {children}
             <Toaster />
           </ThemeProvider>
