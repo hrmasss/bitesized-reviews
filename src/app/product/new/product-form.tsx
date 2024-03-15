@@ -32,7 +32,16 @@ export default function ProductForm() {
   });
 
   const onSubmit = (data: createProductSchema) => {
-    mutate(data);
+    // mutate(data);
+
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
   };
 
   useEffect(() => {
@@ -87,9 +96,10 @@ export default function ProductForm() {
                   <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="number"
                       placeholder="Product price"
-                      {...field}
+                      onChange={(event) => field.onChange(+event.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
