@@ -1,12 +1,6 @@
-import { Archivo, Lobster_Two } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 
-export const archivo = Archivo({
+export const space_grotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-sans",
-});
-
-export const lobster = Lobster_Two({
-  subsets: ["latin"],
-  weight: "700",
-  variable: "--font-display",
 });

@@ -23,7 +23,7 @@ export default function Navbar({ session }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-background/90 backdrop-blur transition-colors duration-500">
       {/* Desktop Nav */}
-      <div className="hidden h-16 items-center justify-between border-y-2 border-foreground md:flex">
+      <div className="hidden h-16 items-center justify-between border-y-2 border-foreground lg:flex">
         <nav className="flex h-full items-center justify-center text-xl font-medium">
           {navLinks.map((link) => (
             <Link className="group ml-10" key={link.href} href={link.href}>

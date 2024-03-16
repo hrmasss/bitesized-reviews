@@ -11,7 +11,7 @@ export default function MobileNav({ auth }: { auth: boolean }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="flex h-12 items-center justify-between gap-4 border-y-2 border-foreground md:hidden">
+      <div className="flex h-12 items-center justify-between gap-4 border-y-2 border-foreground lg:hidden">
         <Button
           size="icon"
           variant="ghost"
@@ -45,7 +45,7 @@ export default function MobileNav({ auth }: { auth: boolean }) {
         )}
       </div>
       <div
-        className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 font-medium md:hidden ${open ? "flex" : "hidden"}`}
+        className={`absolute w-full flex-col gap-4 border-b-2 border-foreground bg-background p-4 font-medium lg:hidden ${open ? "flex" : "hidden"}`}
       >
         {auth && (
           <Link href="/signout">

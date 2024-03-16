@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import Logo from "@/assets/logo.png";
 import Image from "next/image";
 import AuthCard from "@/components/auth/auth-card";
-import { lobster } from "@/styles/fonts";
 import SignInForm from "./form";
 import Link from "next/link";
 
@@ -21,7 +20,7 @@ export default async function SigninPage() {
           <Image priority src={Logo} alt="" />
         </Link>
         <h1
-          className={`text-center font-display text-7xl font-bold ${lobster.className}`}
+          className={`text-center text-7xl font-bold`}
         >
           BiteSized Reviews
         </h1>

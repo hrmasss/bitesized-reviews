@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import GoogleLogo from "@/components/auth/logos/google";
 import Image from "next/image";
 import Logo from "@/assets/logo.png";
-import { lobster } from "@/styles/fonts";
 import Link from "next/link";
 
 const renderProviderLogo = (providerName: string) => {
@@ -37,7 +36,7 @@ export default function AuthCard({ providers, form }: AuthCardProps) {
         <Link href="/" className="flex flex-col items-center justify-center py-2">
           <Image src={Logo} alt="" className="size-20" />
           <h1
-            className={`font-display text-3xl font-bold md:text-7xl ${lobster.className}`}
+            className={`text-3xl font-bold md:text-7xl`}
           >
             BiteSized Reviews
           </h1>

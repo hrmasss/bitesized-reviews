@@ -1,6 +1,6 @@
 import "@uploadthing/react/styles.css";
 import "@/styles/globals.css";
-import { archivo } from "@/styles/fonts";
+import { space_grotesk } from "@/styles/fonts";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${archivo.variable}`}>
+      <body className={`font-sans ${space_grotesk.variable}`}>
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
