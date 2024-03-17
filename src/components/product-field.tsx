@@ -71,7 +71,7 @@ export default function ProductField({ form }: ProductFieldProps) {
       );
     }
 
-    if (products?.length > 0) {
+    if (products?.length === 0) {
       return (
         <span className="space-y-2 px-4 py-6">
           <p className="text-sm font-semibold text-destructive">
