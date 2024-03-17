@@ -21,7 +21,8 @@ import Spinner from "@/components/ui/spinner";
 import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import BrandField from "@/components/brand-field";
-import { UploadDropzone } from "@/components/uploadthing";
+import { useUploadThing } from "@/components/uploadthing";
+import { ProductImageUpload } from "@/components/product-image-input";
 
 export default function ProductForm() {
   const { mutate, status } = api.product.create.useMutation();
@@ -69,28 +70,16 @@ export default function ProductForm() {
       </section>
 
       <section className="max-w-xl">
-        <h3 className="my-4 text-xl font-bold">Post a new review</h3>
+        <h3 className="my-4 text-xl font-bold">Add a new product</h3>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 rounded-lg border bg-background p-6 shadow-sm"
+            className="space-y-6 rounded-lg bg-background shadow-sm md:border md:p-6"
           >
-            <UploadDropzone
-              appearance={{
-                button: "bg-primary hover:bg-primary/90",
-                label: "text-foreground",
-                uploadIcon: "text-primary",
-              }}
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                // Do something with the response
-                console.log("Files: ", res);
-                alert("Upload Completed");
-              }}
-              onUploadError={(error: Error) => {
-                // Do something with the error.
-                alert(`ERROR! ${error.message}`);
-              }}
+            <ProductImageUpload
+              acceptedFileTypes={[]}
+              onFilesSelected={() => {}}
+              error=""
             />
 
             <FormField

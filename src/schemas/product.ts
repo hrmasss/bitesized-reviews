@@ -4,7 +4,7 @@ export const createProductSchema = z.object({
   name: z.string().min(3, { message: "Name must be atleast 3 characters" }),
   brandId: z.number().int(),
   price: z.number().int(),
-  images: z.string().array().nonempty(),
+  images: z.string().array().optional(),
   categories: z.number().int().array().optional(),
 });
 
