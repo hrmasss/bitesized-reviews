@@ -27,6 +27,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import Spinner from "@/components/ui/spinner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface ProductFieldProps {
   form: UseFormReturn<createReviewSchema>;
@@ -39,10 +40,7 @@ export default function ProductField({ form }: ProductFieldProps) {
 
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const {
-    data: products,
-    status,
-  } = api.product.search.useQuery({
+  const { data: products, status } = api.product.search.useQuery({
     name: searchQuery,
   });
 
@@ -66,11 +64,24 @@ export default function ProductField({ form }: ProductFieldProps) {
     }
 
     if (status === "error") {
-      return <p className="p-4 text-destructive">Something went wrong!</p>;
+      return (
+        <p className="p-4 text-sm font-semibold text-destructive">
+          Something went wrong!
+        </p>
+      );
     }
 
-    if (products?.length === 0) {
-      return <p className="p-4 text-destructive">No products found!</p>;
+    if (products?.length > 0) {
+      return (
+        <span className="space-y-2 px-4 py-6">
+          <p className="text-sm font-semibold text-destructive">
+            No products found!
+          </p>
+          <Button asChild size="sm" className="w-full">
+            <Link href="/product/new">Add a new product</Link>
+          </Button>
+        </span>
+      );
     }
 
     return (
