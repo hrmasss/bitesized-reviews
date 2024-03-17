@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/trpc/react";
 import { createProductSchema } from "@/schemas/product";
-import { useRouter } from "next/navigation";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -25,27 +24,54 @@ import { useUploadThing } from "@/components/uploadthing";
 import { ProductImageUpload } from "@/components/product-image-input";
 
 export default function ProductForm() {
-  const { mutate, status } = api.product.create.useMutation();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [imageError, setImageError] = useState("");
 
-  const router = useRouter();
+  const { mutate, status } = api.product.create.useMutation();
 
   const form = useForm<createProductSchema>({
     resolver: zodResolver(createProductSchema),
   });
 
-  const onSubmit = (data: createProductSchema) => {
-    // mutate(data);
+  // Handle image upload
+  // TODO: Fix issues caused by asynchronous callbacks from useUploadThing hook
+  const {
+    startUpload,
+    permittedFileInfo,
+    isUploading: isImageUploading,
+  } = useUploadThing("imageUploader", {
+    onClientUploadComplete: (res) => {
+      if (res && res.length > 0) {
+        const imageUrls = res.map((item) => item.url);
+        form.setValue("images", imageUrls);
+      }
+    },
+    onUploadError: () => {
+      setImageError("Error uploading image");
+    },
+  });
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  const acceptedFileTypes = permittedFileInfo?.config
+    ? Object.keys(permittedFileInfo?.config)
+    : [];
+
+  // Submit handler
+  const onSubmit = async (data: createProductSchema) => {
+    setImageError("");
+    if (selectedFiles.length > 0) await startUpload(selectedFiles);
+
+    const formData = {
+      ...data,
+      images: form.getValues("images"),
+    };
+
+    if (!imageError) {
+      mutate(formData);
+      form.reset();
+    }
   };
 
+  // Handle mutation status
   useEffect(() => {
     if (status === "error") {
       toast({
@@ -54,22 +80,15 @@ export default function ProductForm() {
       });
     } else if (status === "success") {
       toast({
-        title: "Review submitted successfully!",
-        description: "Refresh to see changes...",
+        title: "Successfully added product!",
         variant: "success",
       });
-
-      router.push("/");
     }
-  }, [status, router]);
+  }, [status]);
 
   return (
-    <main className="grid gap-4 lg:grid-cols-2">
-      <section className="max-w-xl">
-        <h3 className="my-4 text-xl font-bold">Preview</h3>
-      </section>
-
-      <section className="max-w-xl">
+    <main>
+      <section className="mx-auto max-w-xl">
         <h3 className="my-4 text-xl font-bold">Add a new product</h3>
         <Form {...form}>
           <form
@@ -77,9 +96,9 @@ export default function ProductForm() {
             className="space-y-6 rounded-lg bg-background shadow-sm md:border md:p-6"
           >
             <ProductImageUpload
-              acceptedFileTypes={[]}
-              onFilesSelected={() => {}}
-              error=""
+              acceptedFileTypes={acceptedFileTypes}
+              onFilesSelected={(files) => setSelectedFiles(files)}
+              error={imageError}
             />
 
             <FormField
@@ -117,10 +136,14 @@ export default function ProductForm() {
 
             <BrandField form={form} />
 
-            <Button disabled={status === "loading"} type="submit">
-              {status === "loading" ? (
+            <Button
+              disabled={status === "loading" || isImageUploading}
+              type="submit"
+            >
+              {status === "loading" || isImageUploading ? (
                 <span className="flex items-center">
-                  <Spinner /> Adding product, please wait...{" "}
+                  <Spinner />{" "}
+                  {isImageUploading ? "Uploading image" : "Saving product"}...
                 </span>
               ) : (
                 "Add product"
