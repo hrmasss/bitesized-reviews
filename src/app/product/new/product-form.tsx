@@ -26,15 +26,22 @@ import { ProductImageUpload } from "@/components/product-image-input";
 export default function ProductForm() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState("");
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const { mutate, status } = api.product.create.useMutation();
 
   const form = useForm<createProductSchema>({
     resolver: zodResolver(createProductSchema),
+    defaultValues: {
+      name: "",
+      price: 0,
+      brandId: 0,
+      images: [],
+      categories: [],
+    },
   });
 
   // Handle image upload
-  // TODO: Fix issues caused by asynchronous callbacks from useUploadThing hook
   const {
     startUpload,
     permittedFileInfo,
@@ -44,10 +51,13 @@ export default function ProductForm() {
       if (res && res.length > 0) {
         const imageUrls = res.map((item) => item.url);
         form.setValue("images", imageUrls);
+        setUploadSuccess(true);
       }
     },
-    onUploadError: () => {
+    onUploadError: (error) => {
       setImageError("Error uploading image");
+      console.error(`${error.code}: ${error.message}`);
+      setUploadSuccess(false);
     },
   });
 
@@ -56,20 +66,22 @@ export default function ProductForm() {
     : [];
 
   // Submit handler
-  const onSubmit = async (data: createProductSchema) => {
+  const onSubmit = async () => {
     setImageError("");
     if (selectedFiles.length > 0) await startUpload(selectedFiles);
+    else setUploadSuccess(true);
+  };
 
-    const formData = {
-      ...data,
-      images: form.getValues("images"),
-    };
+  // Mutate values when upload is complete
+  useEffect(() => {
+    if (uploadSuccess) {
+      const formData = form.getValues();
 
-    if (!imageError) {
       mutate(formData);
       form.reset();
+      setUploadSuccess(false);
     }
-  };
+  }, [uploadSuccess, form, mutate]);
 
   // Handle mutation status
   useEffect(() => {
