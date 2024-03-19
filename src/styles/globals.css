@@ -73,3 +73,25 @@
     @apply bg-foreground/10;
   }
 }
+
+@keyframes blobAnimation {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(100px, -100px) rotate(45deg);
+  }
+  50% {
+    transform: translate(0, 200px) rotate(90deg);
+  }
+  75% {
+    transform: translate(-100px, -100px) rotate(135deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(180deg);
+  }
+}
+
+.blob-animate {
+  animation: blobAnimation 20s infinite linear;
+}
